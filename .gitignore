@@ -1,0 +1,7 @@
+
+.venv/
+.vscode/
+Temp/
+Dags/__pycache__
+Packages/__pycache__
+logs

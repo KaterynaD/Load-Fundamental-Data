@@ -1,0 +1,20 @@
+version: 2
+sources:
+  - name: Json_Data
+    database: mytest_db
+    schema: stocks
+    tables:
+      - name: fundamental_stg
+    quoting:
+      database: False
+      schema: False
+      identifier: False
+  - name: Tickers_Data
+    database: mytest_db
+    schema: stocks
+    tables:
+      - name: fundamental_latest_date
+    quoting:
+      database: False
+      schema: False
+      identifier: False
