@@ -2,7 +2,7 @@
 
 {% set json_column_query %}
 
-with stg as (select * from {{ source('Json_Data', 'fundamental_stg') }} )
+with stg as (select * from {{ source('Json_Data', 'fundamental_stg') }} limit 1)
 select distinct json.key as column_name
 from  stg,
 lateral flatten(stg.value:financials:{{ key1 }}:{{ key2}}) json
@@ -19,7 +19,7 @@ lateral flatten(stg.value:financials:{{ key1 }}:{{ key2}}) json
 {% endif %}
 
 with stg_data as (
-select file_name_part ticker,value from {{ source('Json_Data', 'fundamental_stg') }} limit 1
+select file_name_part ticker,value from {{ source('Json_Data', 'fundamental_stg') }} 
 )
 ,d1 as (
 select 
@@ -78,7 +78,7 @@ and d1.IDX=d2.IDX
 
 {% for column_name in results_list %}
 
-join "d_{{ column_name }}"
+left outer join "d_{{ column_name }}"
 on d1.ticker="d_{{ column_name }}".ticker
 and d1.IDX="d_{{ column_name }}".IDX
 
