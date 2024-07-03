@@ -10,6 +10,24 @@ There are Snowflake external tables configured to get staging data exactly as th
 
 DBT macro is used to parse JSON records in the staging table and each individual part is stored in its own table in Snowflake.
 
+The macro gets keys from the 1st JSON record in the staging table:
+
+with stg as (select * from {{ source('Json_Data', 'fundamental_stg') }} limit 1)
+select distinct json.key as column_name
+from  stg,
+lateral flatten(stg.value:financials:{{ key1 }}:{{ key2}}) json
+
+starting from the specific key for each balance sheet, income statement, chash flow etc parts
+and based on the result creates SELECT statement to build correspondent tables.
+
+Redshift version of the get key SQL:
+
+SELECT
+  key  as column_name
+FROM
+  (select * from {{ source('Json_Data', 'fundamental_stg') }} limit 1) AS stg,
+  UNPIVOT stg.value.financials.{{ key1 }}.{{ key2}} AS value AT key;
+
 ![image](https://github.com/KaterynaD/Load-Fundamental-Data/assets/16999229/a9538ab1-3ef1-4a1f-8f93-1d7df4b30e3e)
 
 
